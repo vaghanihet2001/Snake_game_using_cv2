@@ -9,9 +9,11 @@ class GameManager():
         self.border = border
         self.width = width
         self.height = height
+        self.time = 0
         self.ground = np.zeros((self.height,self.width,3))
+        self.score = 0
         self.move = 1
-        self.speed = 10
+        self.speed = 100
         
     def draw_boder(self):
         # upper border
@@ -31,29 +33,44 @@ class GameManager():
        
         while True:
             image = self.ground.copy()
+            image = cv2.putText(image,"Time : "+str(self.time),(50,50),1,1,(255,255,255))
+            image = cv2.putText(image,"Score : "+str(self.score),(50,100),1,1,(255,255,255))
+            self.time+=1
             if snake.pos == prey.pos:
                 snake.length += 1
                 image = prey.spown(image)
+                self.point_score()
             else:
                 image = prey.update(image)
             print(snake.pos ,prey.pos)
-            image = snake.update(image,self.move)
+            image , status  = snake.update(image,self.move)
             cv2.imshow("Snake Game",image)
-            if cv2.waitKey() == ord('a'):
-                self.move = 1
-            elif cv2.waitKey() == ord('w'):
-                self.move = 2
-            elif cv2.waitKey() == ord('d'): 
-                self.move = 3
-            elif cv2.waitKey() == ord('s'): 
-                self.move = 4
-            elif cv2.waitKey() == ord("q"):
+            if not status:
                 break
-        image = cv2.putText(image,"Quiting Game?",(image.shape[0]//2-(self.border*13),image.shape[1]//2-(self.border*13)),1,2,(255,255,255),2)
+            key = cv2.waitKeyEx(self.speed)
+            if key == ord('a') or key == 2424832:
+                self.move = 1
+            elif key == ord('w') or key == 2490368:
+                self.move = 2
+            elif key == ord('d') or key == 2555904: 
+                self.move = 3
+            elif key == ord('s') or key == 2621440: 
+                self.move = 4
+            elif key == 27: # Esc
+                break
+        if not status:
+            text = "Game Over"
+        else:
+            text = "Quiting Game?"
+            
+        image = cv2.putText(image,text,(image.shape[0]//2-(self.border*13),image.shape[1]//2-(self.border*13)),1,2,(255,255,255),2)
         cv2.imshow("Snake Game",image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
                 
             
         
+    def point_score(self):
+        self.score += 1
+        self.speed -= 5
         

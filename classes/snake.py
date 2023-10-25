@@ -35,6 +35,9 @@ class Snake():
             np = [cp[0]+self.unit,cp[1]]
         elif move == 4: # bottom
             np = [cp[0],cp[1]+self.unit]
+            
+        if np in self.body:
+            self.is_alive = False
         
         if np[0] >= self.min_x_cord and np[1] >= self.min_y_cord and np[0] <= self.max_x_cord and np[1] <= self.max_y_cord:
             self.body.append(np)
@@ -47,5 +50,5 @@ class Snake():
         for i in self.body:
             image = cv2.rectangle(image,(i[0],i[1]),(i[0]+self.unit,i[1]+self.unit),(0,255,0),2)
         
-        return image
+        return image ,self.is_alive
         
