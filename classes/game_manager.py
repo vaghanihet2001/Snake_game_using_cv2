@@ -26,6 +26,7 @@ class GameManager():
         self.ground[:,-(self.border):,:] = np.ones((self.height,self.border,3))*255
         
     def start(self):
+    
         snake = Snake(self.width,self.height,self.border)
         prey = Prey(self.width, self.height,self.border)
         image = snake.spown(self.ground)
@@ -42,7 +43,7 @@ class GameManager():
                 self.point_score()
             else:
                 image = prey.update(image)
-            print(snake.pos ,prey.pos)
+            # print(snake.pos ,prey.pos)
             image , status  = snake.update(image,self.move)
             cv2.imshow("Snake Game",image)
             if not status:
@@ -62,8 +63,14 @@ class GameManager():
             text = "Game Over"
         else:
             text = "Quiting Game?"
-            
-        image = cv2.putText(image,text,(image.shape[0]//2-(self.border*13),image.shape[1]//2-(self.border*13)),1,2,(255,255,255),2)
+        fontScale = 2
+        fontFace = cv2.FONT_HERSHEY_PLAIN
+
+        ((fw,fh), baseline) = cv2.getTextSize(text, fontFace=fontFace, fontScale=fontScale, thickness=1) # empty string is good enough
+        # factor = (fh-1) / fontScale
+        w,h = image.shape[1],image.shape[0]
+        org = ((w-fw)//2, (h+fh)//2)
+        image = cv2.putText(image,text,org,fontFace,fontScale,(255,255,255),1)
         cv2.imshow("Snake Game",image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -72,5 +79,5 @@ class GameManager():
         
     def point_score(self):
         self.score += 1
-        self.speed -= 5
+        self.speed -= 5 # less speed value == more speed
         

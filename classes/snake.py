@@ -44,11 +44,16 @@ class Snake():
             self.pos = [self.body[-1][0]//self.unit ,self.body[-1][1]//self.unit]
         
         if len(self.body) != self.length:
-            print("snake",len(self.body),self.body)
+            # print("snake",len(self.body),self.body)
             self.body.pop(0) 
             
-        for i in self.body:
-            image = cv2.rectangle(image,(i[0],i[1]),(i[0]+self.unit,i[1]+self.unit),(0,255,0),2)
+        for index, i in enumerate(self.body):
+            if index == len(self.body)-1:
+                color = (255,0,0)
+            else:
+                color = (0,255,0)
+            image = cv2.rectangle(image,(i[0],i[1]),(i[0]+self.unit,i[1]+self.unit),color,2)
         
         return image ,self.is_alive
         
+    
